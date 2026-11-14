@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find Employers — bayma</title>
+<meta name="description" content="Explore Bay Area clinics, practices and health systems hiring medical assistants. See their open MA roles and specialties.">
+<!-- New Spirit via Adobe Fonts -->
+<link rel="stylesheet" href="https://use.typekit.net/see1pbj.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  .emp-band{padding:50px 0 52px}
+  .emp-band .lead{margin-bottom:30px}
+
+  .list-top{border-bottom:1.5px solid var(--line);padding-bottom:14px;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .list-top .results-title{margin:8px 0 0}
+  .emp-list{list-style:none}
+  .emp{display:grid;grid-template-columns:90px 1fr auto;gap:0 32px;align-items:center;padding:30px 0 26px;border-bottom:1.5px solid var(--line);animation:rise .3s ease both}
+  .emp-logo{width:90px;height:64px;display:grid;place-items:center}
+  .emp-logo img{max-width:90px;max-height:64px;width:auto;height:auto;object-fit:contain}
+  .emp h3{font-size:1.08rem;font-weight:600;color:var(--navy);line-height:1.25}
+  .emp .meta{font-size:.78rem;font-weight:500;color:var(--navy);margin:3px 0 10px}
+  .emp .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .emp .tags .pill{font-size:.62rem;padding:.3em 1.1em;background:#DADBD7;color:#444}
+  .emp .side{display:flex;flex-direction:column;align-items:flex-end;gap:22px;align-self:stretch;justify-content:space-between}
+  .emp .view{background:var(--lime);color:var(--navy);font-size:.8rem;font-weight:500;padding:.55em 1.9em;border-radius:3px;transition:filter .15s,transform .15s}
+  .emp .view:hover{filter:brightness(1.04);transform:translateY(-1px)}
+  .emp .open{font-size:.66rem;color:var(--ink)}
+  .emp .open.none{color:#8A9499}
+  .toolbar{margin:18px 0 0;display:none}
+
+  @media (max-width:860px){
+    .emp-band{padding:30px 0 36px}
+    .toolbar{display:flex}
+    .emp{grid-template-columns:64px 1fr;gap:0 18px;align-items:start}
+    .emp-logo{width:64px;height:52px}
+    .emp-logo img{max-width:64px;max-height:52px}
+    .emp .side{grid-column:1/-1;flex-direction:row;align-items:center;margin-top:16px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="bayma home">
+      <img src="img/bayma-logo-horizontal.png" alt="bayma" width="526" height="116">
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="jobs.html">FIND JOBS</a>
+      <a href="employers.html" aria-current="page">FIND EMPLOYERS</a>
+      <a href="resources.html">CAREER RESOURCES</a>
+      <a href="for-employers.html">FOR EMPLOYERS</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-light" href="login.html">Sign In</a>
+      <a class="btn btn-dark" href="for-employers.html">Post a Job</a>
+    </div>
+    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<section class="band emp-band" aria-label="Search employers">
+  <div class="wrap">
+    <h1>Find employers near you</h1>
+    <p class="lead">Explore clinics, practices and health systems. See their open MA roles, benefits and what it's like to work there.</p>
+    <form id="search-form" autocomplete="off">
+      <div class="field">
+        <label for="q">Employer name or location</label>
+        <input id="q" type="search" list="city-list">
+        <datalist id="city-list"></datalist>
+      </div>
+      <button class="search-btn" type="submit">Search</button>
+    </form>
+  </div>
+</section>
+
+<main class="board">
+  <div class="wrap">
+    <aside class="filters" aria-label="Filters">
+      <div class="filters-head">
+        <h2>Filters</h2>
+        <div style="display:flex;align-items:baseline">
+          <button class="link-btn" id="clear-all" type="button">Clear all</button>
+          <button class="filters-close" type="button" aria-label="Close filters">×</button>
+        </div>
+      </div>
+      <fieldset>
+        <legend>Hiring Status</legend>
+        <label class="opt"><input type="checkbox" data-group="status" value="hiring"><span>Actively hiring</span></label>
+        <label class="opt"><input type="checkbox" data-group="status" value="entry"><span>Hires entry level / new grads</span></label>
+      </fieldset>
+      <fieldset><legend>Employer Type</legend><div id="f-type"></div></fieldset>
+      <fieldset>
+        <legend>Specialty</legend>
+        <div id="f-spec"></div>
+        <div id="f-spec-more" class="more" hidden></div>
+        <button class="show-more" id="show-more" type="button" aria-expanded="false">+ Show more</button>
+      </fieldset>
+    </aside>
+    <div class="filters-apply"><button class="btn btn-dark" type="button">Show employers</button></div>
+    <div class="scrim"></div>
+
+    <section aria-live="polite">
+      <div class="list-top">
+        <h1 class="results-title" id="title">Employers in the Bay Area</h1>
+      </div>
+      <div class="toolbar"><button class="filters-toggle" type="button">Filters <span id="filter-count"></span></button></div>
+      <ul class="emp-list" id="list"></ul>
+      <nav class="pager" id="pager" aria-label="Pages"></nav>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-left">
+      <a class="foot-brand" href="index.html" aria-label="bayma home">
+        <img src="img/bayma-logo-white.png" alt="bayma" loading="lazy">
+      </a>
+      <p class="copy">© Bay Medical Assistants Job Board. <span class="js-year">2026</span>.</p>
+      <p class="legal"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></p>
+    </div>
+    <div class="foot-links">
+      <ul>
+        <li><a href="login.html">LOG IN</a></li>
+        <li><a href="for-employers.html">POST A JOB</a></li>
+      </ul>
+      <ul>
+        <li><a href="jobs.html">FIND JOBS</a></li>
+        <li><a href="employers.html">FIND EMPLOYERS</a></li>
+        <li><a href="resources.html">CAREER RESOURCES</a></li>
+        <li><a href="for-employers.html">FOR EMPLOYERS</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script src="data.js"></script>
+<script>
+const PER_PAGE = 10;
+const { esc } = bayma;
+const $ = id => document.getElementById(id);
+const state = { q: "", status: new Set(), type: new Set(), spec: new Set(), page: 1 };
+
+/* stats per employer, worked out from the job list */
+const STATS = {};
+Object.keys(EMPLOYERS).forEach(k => {
+  const jobs = JOBS.filter(j => j.emp === k);
+  STATS[k] = { open: jobs.length, entry: jobs.some(j => j.exp === "entry"),
+               cities: [...new Set(jobs.map(j => j.city))] };
+});
+
+/* filter controls */
+const cb = (g, v, l) => `<label class="opt"><input type="checkbox" data-group="${g}" value="${esc(v)}"><span>${esc(l)}</span></label>`;
+$("f-type").innerHTML = EMPLOYER_TYPES.map(t => cb("type", t, t)).join("");
+const specLabel = s => s === "Family / Primary Care" ? "Family / primary care" : s;
+$("f-spec").innerHTML      = EMPLOYER_SPECIALTIES.slice(0, 4).map(s => cb("spec", s, specLabel(s))).join("");
+$("f-spec-more").innerHTML = EMPLOYER_SPECIALTIES.slice(4).map(s => cb("spec", s, s)).join("");
+$("city-list").innerHTML = Object.keys(CITIES).map(c => `<option value="${c}, CA">`).join("");
+
+function nearCity(text){
+  const t = text.trim(); if (!t) return null;
+  const zip = t.match(/\b\d{5}\b/);
+  if (zip && ZIPS[zip[0]]) return ZIPS[zip[0]];
+  const name = t.split(",")[0].trim().toLowerCase();
+  return Object.keys(CITIES).find(c => c.toLowerCase() === name) || null;
+}
+const dist = ([a1, o1], [a2, o2]) => {
+  const r = x => x * Math.PI / 180, R = 3958.8;
+  const d = Math.sin(r(a2 - a1) / 2) ** 2 + Math.cos(r(a1)) * Math.cos(r(a2)) * Math.sin(r(o2 - o1) / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(d));
+};
+
+function matches(k, skip){
+  const e = EMPLOYERS[k], st = STATS[k];
+  if (state.q){
+    const city = nearCity(state.q);
+    if (city){
+      // employers with an open job within 25 miles of that city
+      if (!st.cities.some(c => dist(CITIES[c], CITIES[city]) <= 25)) return false;
+    } else {
+      const hay = `${e.name} ${e.directoryName || ""} ${e.label} ${e.tags.join(" ")} ${st.cities.join(" ")} san francisco bay area`.toLowerCase();
+      if (!state.q.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
+    }
+  }
+  if (skip !== "status"){
+    if (state.status.has("hiring") && !st.open) return false;
+    if (state.status.has("entry") && !st.entry) return false;
+  }
+  if (skip !== "type" && state.type.size && !state.type.has(e.type)) return false;
+  if (skip !== "spec" && state.spec.size && ![...state.spec].some(s => e.specialties.includes(s))) return false;
+  return true;
+}
+
+function row(k){
+  const e = EMPLOYERS[k], st = STATS[k];
+  return `<li class="emp">
+    <div class="emp-logo"><img src="${e.wordmark}" alt="${esc(e.name)} logo" loading="lazy"></div>
+    <div>
+      <h3>${esc(e.directoryName || e.name)}</h3>
+      <p class="meta">${esc(e.label)} - San Francisco Bay Area</p>
+      <div class="tags">${e.tags.map(t => `<span class="pill">${esc(t)}</span>`).join("")}</div>
+    </div>
+    <div class="side">
+      <a class="view" href="jobs.html#${k}" aria-label="View ${esc(e.name)} jobs">View</a>
+      <span class="open ${st.open ? "" : "none"}">${st.open ? `${st.open} Open Job${st.open === 1 ? "" : "s"}` : "No open jobs"}</span>
+    </div>
+  </li>`;
+}
+
+function render(){
+  const keys = Object.keys(EMPLOYERS).filter(k => matches(k))
+    .sort((a, b) => STATS[b].open - STATS[a].open);
+  const pages = Math.max(1, Math.ceil(keys.length / PER_PAGE));
+  state.page = Math.min(state.page, pages);
+  const slice = keys.slice((state.page - 1) * PER_PAGE, state.page * PER_PAGE);
+
+  const city = nearCity(state.q);
+  const where = city ? `near ${city}, CA` : "in the Bay Area";
+  $("title").textContent = `${keys.length} Employer${keys.length === 1 ? "" : "s"} ${where}`;
+  $("list").innerHTML = slice.length ? slice.map(row).join("") :
+    `<li class="empty" style="margin-top:28px"><h3>No employers match those filters</h3><p>Try removing a filter or searching a different city.</p><button class="btn btn-dark" type="button" onclick="clearAll()">Clear all filters</button></li>`;
+  $("pager").innerHTML = bayma.pager(state.page, pages);
+
+  const n = state.status.size + state.type.size + state.spec.size;
+  $("filter-count").textContent = n ? `(${n})` : "";
+  document.querySelectorAll(".opt input").forEach(i => {
+    const g = i.dataset.group, v = i.value;
+    const count = Object.keys(EMPLOYERS).filter(k => matches(k, g) && (
+      g === "type" ? EMPLOYERS[k].type === v :
+      g === "spec" ? EMPLOYERS[k].specialties.includes(v) :
+      v === "hiring" ? STATS[k].open : STATS[k].entry)).length;
+    let b = i.parentElement.querySelector(".n");
+    if (!b){ b = document.createElement("span"); b.className = "n"; i.parentElement.append(b); }
+    b.textContent = count;
+  });
+}
+const update = () => { state.page = 1; render(); };
+function clearAll(){
+  ["status", "type", "spec"].forEach(g => state[g].clear());
+  state.q = ""; $("q").value = "";
+  document.querySelectorAll(".opt input").forEach(i => i.checked = false);
+  update();
+}
+window.clearAll = clearAll;
+
+$("search-form").addEventListener("submit", e => { e.preventDefault(); state.q = $("q").value.trim(); update(); });
+document.querySelector(".filters").addEventListener("change", e => {
+  const t = e.target; if (!t.dataset.group) return;
+  t.checked ? state[t.dataset.group].add(t.value) : state[t.dataset.group].delete(t.value);
+  update();
+});
+$("show-more").addEventListener("click", e => {
+  const more = $("f-spec-more"); more.hidden = !more.hidden;
+  e.target.textContent = more.hidden ? "+ Show more" : "– Show less";
+  e.target.setAttribute("aria-expanded", !more.hidden);
+});
+$("clear-all").addEventListener("click", clearAll);
+$("pager").addEventListener("click", e => {
+  const b = e.target.closest("button[data-page]"); if (!b || b.disabled) return;
+  state.page = +b.dataset.page; render();
+  $("title").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+render();
+</script>
+</body>
+</html>

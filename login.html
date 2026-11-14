@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign In — bayma</title>
+<meta name="description" content="Sign in to save jobs, get MA job alerts and follow Bay Area employers.">
+<!-- New Spirit via Adobe Fonts -->
+<link rel="stylesheet" href="https://use.typekit.net/see1pbj.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  .login{padding:60px 0 150px}
+  .login .wrap{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:50px;max-width:930px}
+
+  .card-form{border:2px solid var(--line);border-radius:12px;padding:30px 28px 40px;background:#fff}
+  .card-form h1{font-size:1.65rem;margin-bottom:12px}
+  .card-form .sub{font-size:.76rem;color:var(--navy);margin-bottom:36px}
+  .form-row{margin-bottom:22px}
+  .form-row .lbl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .form-row label{font-size:.76rem}
+  .form-row .lbl a{font-size:.6rem}
+  .form-row input{width:100%;height:52px;border:2px solid var(--line);border-radius:6px;padding:0 14px;font-size:.92rem;outline:none;background:#fff;transition:border-color .15s}
+  .form-row input:focus{border-color:var(--navy)}
+  .form-row input[aria-invalid=true]{border-color:#C46060}
+  .err{font-size:.7rem;color:#A23B3B;margin-top:6px;min-height:1em}
+  .pw{position:relative}
+  .pw button{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.66rem;color:var(--muted);padding:6px}
+  .submit{width:100%;height:54px;background:var(--lime);color:var(--navy);border-radius:6px;font-size:.86rem;font-weight:500;margin-top:8px;transition:filter .15s}
+  .submit:hover{filter:brightness(1.04)}
+  .submit:disabled{opacity:.6;cursor:default}
+  .form-msg{font-size:.76rem;text-align:center;margin-top:14px;color:var(--navy)}
+  .new-here{font-size:.74rem;text-align:center;margin-top:28px}
+
+  .perks h2{font-family:var(--heading);font-weight:400;color:var(--navy);font-size:clamp(1.3rem,2vw,1.6rem);margin:32px 0 34px}
+  .perk-list{list-style:none;display:flex;flex-direction:column;gap:24px;margin-bottom:34px}
+  .perk{display:grid;grid-template-columns:22px 1fr;gap:4px 14px}
+  .perk svg{width:20px;height:20px;margin-top:2px;stroke:var(--ink);fill:none;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+  .perk h3{font-size:.96rem;font-weight:600;color:var(--navy)}
+  .perk p{grid-column:2;font-size:.72rem}
+  .note{background:var(--sky);border-radius:6px;padding:14px 30px;font-size:.72rem;max-width:400px;margin-bottom:22px}
+  .employer-link{font-size:.72rem;max-width:400px;text-align:center}
+
+  @media (max-width:860px){
+    .login{padding:20px 0 80px}
+    .login .wrap{grid-template-columns:1fr;gap:20px}
+    .perks h2{margin-top:20px}
+    .note,.employer-link{max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="bayma home">
+      <img src="img/bayma-logo-horizontal.png" alt="bayma" width="526" height="116">
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="jobs.html">FIND JOBS</a>
+      <a href="employers.html">FIND EMPLOYERS</a>
+      <a href="resources.html">CAREER RESOURCES</a>
+      <a href="for-employers.html">FOR EMPLOYERS</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-light" href="login.html" aria-current="page">Sign In</a>
+      <a class="btn btn-dark" href="for-employers.html">Post a Job</a>
+    </div>
+    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<main class="login">
+  <div class="wrap">
+    <section class="card-form">
+      <h1>Sign In</h1>
+      <p class="sub">Welcome back! Pick up right where you left off.</p>
+      <form id="login" novalidate>
+        <div class="form-row">
+          <div class="lbl"><label for="email">Email</label></div>
+          <input id="email" type="email" autocomplete="email" required aria-describedby="email-err">
+          <p class="err" id="email-err"></p>
+        </div>
+        <div class="form-row">
+          <div class="lbl"><label for="password">Password</label><a class="link" href="#">Forgot Password?</a></div>
+          <div class="pw">
+            <input id="password" type="password" autocomplete="current-password" required aria-describedby="pw-err">
+            <button type="button" id="show-pw" aria-label="Show password">Show</button>
+          </div>
+          <p class="err" id="pw-err"></p>
+        </div>
+        <button class="submit" type="submit">Sign In</button>
+        <p class="form-msg" id="form-msg" hidden></p>
+      </form>
+      <p class="new-here">New here? <a class="link" href="#">Create a free account</a></p>
+    </section>
+
+    <section class="perks">
+      <h2>With a free account you can</h2>
+      <ul class="perk-list">
+        <li class="perk">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>
+          <h3>Save jobs</h3><p>Keep a shortlist and come back to apply later.</p>
+        </li>
+        <li class="perk">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/><path d="M12 3v2"/></svg>
+          <h3>Get job alerts</h3><p>New MA jobs that match your search, by email.</p>
+        </li>
+        <li class="perk">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>
+          <h3>Follow employers</h3><p>Hear first when a practice you like is hiring.</p>
+        </li>
+      </ul>
+      <p class="note">You always apply on the employer's own website.<br>We never send your information to employers.</p>
+      <p class="employer-link">Posting a job? <a class="link" href="for-employers.html">Go to Manage my Jobs</a></p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-left">
+      <a class="foot-brand" href="index.html" aria-label="bayma home">
+        <img src="img/bayma-logo-white.png" alt="bayma" loading="lazy">
+      </a>
+      <p class="copy">© Bay Medical Assistants Job Board. <span class="js-year">2026</span>.</p>
+      <p class="legal"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></p>
+    </div>
+    <div class="foot-links">
+      <ul>
+        <li><a href="login.html">LOG IN</a></li>
+        <li><a href="for-employers.html">POST A JOB</a></li>
+      </ul>
+      <ul>
+        <li><a href="jobs.html">FIND JOBS</a></li>
+        <li><a href="employers.html">FIND EMPLOYERS</a></li>
+        <li><a href="resources.html">CAREER RESOURCES</a></li>
+        <li><a href="for-employers.html">FOR EMPLOYERS</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+
+$("show-pw").addEventListener("click", e => {
+  const pw = $("password"), show = pw.type === "password";
+  pw.type = show ? "text" : "password";
+  e.target.textContent = show ? "Hide" : "Show";
+  e.target.setAttribute("aria-label", show ? "Hide password" : "Show password");
+});
+
+function check(input, errEl, message){
+  const bad = !input.checkValidity();
+  input.setAttribute("aria-invalid", bad);
+  $(errEl).textContent = bad ? message : "";
+  return !bad;
+}
+
+$("login").addEventListener("submit", async e => {
+  e.preventDefault();
+  const okEmail = check($("email"), "email-err", $("email").value ? "Please enter a valid email address." : "Please enter your email.");
+  const okPw = check($("password"), "pw-err", "Please enter your password.");
+  if (!okEmail){ $("email").focus(); return; }
+  if (!okPw){ $("password").focus(); return; }
+
+  /* TODO: connect to your sign-in system, e.g.
+       const res = await fetch("/api/login", { method: "POST", headers: {"Content-Type": "application/json"},
+         body: JSON.stringify({ email: $("email").value, password: $("password").value }) });
+       if (res.ok) location.href = "jobs.html"; else show the error message from the server. */
+  const msg = $("form-msg");
+  msg.hidden = false;
+  msg.textContent = "Sign-in isn't connected yet. This is where your account system plugs in.";
+});
+["email", "password"].forEach(id => $(id).addEventListener("input", () => {
+  $(id).removeAttribute("aria-invalid"); $(id === "email" ? "email-err" : "pw-err").textContent = "";
+}));
+</script>
+</body>
+</html>

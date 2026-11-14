@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find Jobs — bayma</title>
+<meta name="description" content="Search medical assistant jobs around the San Francisco Bay Area by role, certification, specialty, schedule, pay and experience.">
+<!-- New Spirit via Adobe Fonts -->
+<link rel="stylesheet" href="https://use.typekit.net/see1pbj.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  /* ---------- Search band ---------- */
+  .jobs-band{padding:44px 0 66px}
+  .jobs-band form{grid-template-columns:1.4fr 1fr .42fr auto;gap:26px}
+
+  /* ---------- Toolbar ---------- */
+  .toolbar{display:flex;align-items:center;gap:16px 26px;flex-wrap:wrap;margin-bottom:46px}
+  .sort{display:flex;align-items:center;gap:16px;font-size:.78rem}
+  .sort select,.filters select{height:34px;border:1px solid #BFC4C2;border-radius:2px;background:#fff;padding:0 34px 0 12px;font-size:.78rem;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23999' stroke-width='1.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+  .filters select{width:100%;height:36px;font-size:.84rem;padding-left:14px}
+  .active{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.78rem}
+  .active[hidden]{display:none}
+  .active-label{margin-right:8px}
+  .count{font-size:.74rem;color:var(--muted);margin:-30px 0 16px}
+
+  /* ---------- Filter extras ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:10px 8px}
+  .chip-toggle{border:1px solid var(--line);border-radius:999px;font-size:.66rem;padding:.35em 1.05em;background:#fff;transition:background .15s,border-color .15s}
+  .chip-toggle:hover{border-color:#aab}
+  .chip-toggle[aria-pressed=true]{background:var(--pill);border-color:var(--pill);font-weight:500}
+  .pay-label{font-size:.82rem;margin-bottom:14px}
+  input[type=range]{width:100%;appearance:none;height:5px;border-radius:3px;background:linear-gradient(var(--navy),var(--navy)) 0/var(--p,0%) 100% no-repeat,#DFE1DE;outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:var(--navy);border:0}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--navy);border:0}
+  .range-ends{display:flex;justify-content:space-between;font-size:.6rem;margin-top:6px}
+
+  /* ---------- Job cards ---------- */
+  .list{display:flex;flex-direction:column;gap:28px}
+  .card{display:grid;grid-template-columns:62px 1fr auto;column-gap:18px;background:#fff;border:2px solid var(--line);border-radius:6px;padding:20px 26px 18px 18px;transition:border-color .2s,box-shadow .2s,transform .2s;animation:rise .3s ease both}
+  .card:hover{border-color:#b9c7cf;box-shadow:0 10px 30px -16px rgba(33,63,83,.35);transform:translateY(-2px)}
+  .card img{width:62px;height:62px;object-fit:contain;margin-top:2px}
+  .card h3{font-size:1.08rem;font-weight:600;color:var(--navy);line-height:1.25;margin-top:6px}
+  .card .where{font-size:.8rem;font-weight:500;color:var(--navy);margin-top:2px}
+  .card .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;grid-column:1/3}
+  .pill.new{background:var(--lime);color:var(--navy);font-weight:500}
+  .card .side{grid-row:1/3;grid-column:3;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;text-align:right;padding-top:12px}
+  .card .pay{font-size:.82rem;font-weight:600;color:var(--navy);white-space:nowrap}
+  .card .posted{font-size:.66rem;color:#7A858B;margin-top:2px}
+  .card .view{font-size:.68rem;color:var(--link);text-decoration:underline;text-underline-offset:2px;margin-right:-4px}
+
+  @media (max-width:1000px){
+    .jobs-band form{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:860px){
+    .jobs-band{padding:30px 0 36px}
+    .jobs-band form{grid-template-columns:1fr;gap:16px}
+    .toolbar{margin-bottom:36px}
+    .card{grid-template-columns:48px 1fr;padding:18px}
+    .card img{width:48px;height:48px}
+    .card .side{grid-row:auto;grid-column:1/-1;flex-direction:row;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);text-align:left}
+    .card .pills{grid-column:1/-1}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="bayma home">
+      <img src="img/bayma-logo-horizontal.png" alt="bayma" width="526" height="116">
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="jobs.html" aria-current="page">FIND JOBS</a>
+      <a href="employers.html">FIND EMPLOYERS</a>
+      <a href="resources.html">CAREER RESOURCES</a>
+      <a href="for-employers.html">FOR EMPLOYERS</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-light" href="login.html">Sign In</a>
+      <a class="btn btn-dark" href="for-employers.html">Post a Job</a>
+    </div>
+    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<section class="band jobs-band" aria-label="Search jobs">
+  <div class="wrap">
+    <form id="search-form" autocomplete="off">
+      <div class="field">
+        <label for="q">Job title or keyword</label>
+        <input id="q" type="search">
+      </div>
+      <div class="field loc-wrap">
+        <label for="loc">City, state, or ZIP</label>
+        <input id="loc" type="text" list="city-list">
+        <datalist id="city-list"></datalist>
+      </div>
+      <div class="field">
+        <label for="dist">Distance</label>
+        <select id="dist">
+          <option value="">Any</option>
+          <option value="5">5 mi</option>
+          <option value="10">10 mi</option>
+          <option value="25">25 mi</option>
+          <option value="50">50 mi</option>
+        </select>
+      </div>
+      <button class="search-btn" type="submit">Search</button>
+    </form>
+  </div>
+</section>
+
+<main class="board">
+  <div class="wrap">
+
+    <!-- ---------- Filters ---------- -->
+    <aside class="filters" id="filters" aria-label="Filters">
+      <div class="filters-head">
+        <h2>Filters</h2>
+        <div style="display:flex;align-items:baseline">
+          <button class="link-btn" id="clear-all" type="button">Clear all</button>
+          <button class="filters-close" type="button" aria-label="Close filters">×</button>
+        </div>
+      </div>
+
+      <fieldset><legend>Role Type</legend><div id="f-role"></div></fieldset>
+      <fieldset><legend>Certification</legend><div id="f-cert"></div></fieldset>
+      <fieldset>
+        <legend>Specialty</legend>
+        <div id="f-spec"></div>
+        <div id="f-spec-more" class="more" hidden></div>
+        <button class="show-more" id="show-more" type="button" aria-expanded="false">+ Show more</button>
+      </fieldset>
+      <fieldset><legend>Schedule</legend><div class="chips" id="f-sched"></div></fieldset>
+      <fieldset>
+        <legend>Minimum pay</legend>
+        <p class="pay-label" id="pay-label">Any pay</p>
+        <label class="sr" for="f-pay">Minimum hourly pay</label>
+        <input type="range" id="f-pay" min="0" max="100" step="1" value="0">
+        <div class="range-ends"><span>$0</span><span>$100</span></div>
+      </fieldset>
+      <fieldset><legend>Experience</legend><div id="f-exp"></div></fieldset>
+      <fieldset>
+        <legend><label for="f-date">Date Posted</label></legend>
+        <select id="f-date">
+          <option value="">Any time</option>
+          <option value="1">Last 24 hours</option>
+          <option value="3">Last 3 days</option>
+          <option value="7">Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30">Last 30 days</option>
+        </select>
+      </fieldset>
+    </aside>
+    <div class="filters-apply"><button class="btn btn-dark" id="apply" type="button">Show jobs</button></div>
+    <div class="scrim" id="scrim"></div>
+
+    <!-- ---------- Results ---------- -->
+    <section class="results" aria-live="polite">
+      <h1 class="results-title" id="title">Medical Assistant jobs in the Bay Area</h1>
+      <div class="toolbar">
+        <button class="filters-toggle" id="filters-toggle" type="button">Filters <span id="filter-count"></span></button>
+        <div class="sort">
+          <label for="sort">Sort by:</label>
+          <select id="sort">
+            <option value="relevant">Most Relevant</option>
+            <option value="newest">Newest</option>
+            <option value="pay">Highest Pay</option>
+          </select>
+        </div>
+        <div class="active" id="active" hidden><span class="active-label">Active:</span></div>
+      </div>
+      <p class="count" id="count"></p>
+      <div class="list" id="list"></div>
+      <nav class="pager" id="pager" aria-label="Pages"></nav>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-left">
+      <a class="foot-brand" href="index.html" aria-label="bayma home">
+        <img src="img/bayma-logo-white.png" alt="bayma" loading="lazy">
+      </a>
+      <p class="copy">© Bay Medical Assistants Job Board. <span class="js-year">2026</span>.</p>
+      <p class="legal"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></p>
+    </div>
+    <div class="foot-links">
+      <ul>
+        <li><a href="login.html">LOG IN</a></li>
+        <li><a href="for-employers.html">POST A JOB</a></li>
+      </ul>
+      <ul>
+        <li><a href="jobs.html">FIND JOBS</a></li>
+        <li><a href="employers.html">FIND EMPLOYERS</a></li>
+        <li><a href="resources.html">CAREER RESOURCES</a></li>
+        <li><a href="for-employers.html">FOR EMPLOYERS</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script src="data.js"></script>
+<script>
+const PER_PAGE = 10;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- state ---------- */
+const state = {
+  q: "", loc: "", dist: "",
+  role: new Set(), cert: new Set(), spec: new Set(), sched: new Set(),
+  emp: "", pay: 0, exp: "", date: "", sort: "relevant", page: 1
+};
+
+/* ---------- build filter controls ---------- */
+const checkbox = (group, value, label) =>
+  `<label class="opt"><input type="checkbox" data-group="${group}" value="${esc(value)}"><span>${esc(label)}</span></label>`;
+
+$("f-role").innerHTML = ROLE_TYPES.map(r => checkbox("role", r, r)).join("");
+$("f-cert").innerHTML = CERTIFICATIONS.map(c => checkbox("cert", c, c)).join("")
+                      + checkbox("cert", "none", "No certification required");
+$("f-spec").innerHTML      = SPECIALTIES.slice(0, 4).map(s => checkbox("spec", s.name, s.pill ? "Family / primary care" : s.name)).join("");
+$("f-spec-more").innerHTML = SPECIALTIES.slice(4).map(s => checkbox("spec", s.name, s.name)).join("");
+$("f-sched").innerHTML = SCHEDULES.map(s => `<button type="button" class="chip-toggle" data-sched="${s}" aria-pressed="false">${s}</button>`).join("");
+$("f-exp").innerHTML = [["", "Any"], ...Object.entries(EXPERIENCE)]
+  .map(([v, l]) => `<label class="opt"><input type="radio" name="exp" value="${v}" ${v === "" ? "checked" : ""}><span>${l}</span></label>`).join("");
+$("city-list").innerHTML = Object.keys(CITIES).map(c => `<option value="${c}, CA">`).join("");
+
+/* ---------- location helpers ---------- */
+function resolveCity(text){
+  const t = text.trim();
+  if (!t) return null;
+  const zip = t.match(/\b\d{5}\b/);
+  if (zip && ZIPS[zip[0]]) return ZIPS[zip[0]];
+  const name = t.split(",")[0].trim().toLowerCase();
+  return Object.keys(CITIES).find(c => c.toLowerCase() === name) || null;
+}
+function miles([a1, o1], [a2, o2]){
+  const r = x => x * Math.PI / 180, R = 3958.8;
+  const d = Math.sin(r(a2 - a1) / 2) ** 2 + Math.cos(r(a1)) * Math.cos(r(a2)) * Math.sin(r(o2 - o1) / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(d));
+}
+
+/* ---------- filtering ---------- */
+function matches(job, skip){
+  const s = state;
+  if (s.q){
+    const hay = `${job.title} ${EMPLOYERS[job.emp].name} ${job.specialty} ${job.role} ${job.city}`.toLowerCase();
+    if (!s.q.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false;
+  }
+  if (s.loc){
+    const city = resolveCity(s.loc);
+    if (city){
+      if (s.dist){ if (miles(CITIES[city], CITIES[job.city]) > +s.dist) return false; }
+      else if (job.city !== city) return false;
+    } else if (!job.city.toLowerCase().includes(s.loc.split(",")[0].trim().toLowerCase())) return false;
+  }
+  if (s.emp && job.emp !== s.emp) return false;
+  if (skip !== "role"  && s.role.size  && !s.role.has(job.role)) return false;
+  if (skip !== "spec"  && s.spec.size  && !s.spec.has(job.specialty)) return false;
+  if (skip !== "sched" && s.sched.size && !s.sched.has(job.type)) return false;
+  if (skip !== "cert"  && s.cert.size){
+    const ok = [...s.cert].some(c => c === "none" ? job.certs.length === 0 : job.certs.includes(c));
+    if (!ok) return false;
+  }
+  if (s.pay && job.max < s.pay) return false;
+  if (s.exp && job.exp !== s.exp) return false;
+  if (s.date && job.daysAgo > +s.date) return false;
+  return true;
+}
+
+function relevance(job){
+  let score = -job.daysAgo * 0.2;
+  if (state.q){
+    const q = state.q.toLowerCase();
+    if (job.title.toLowerCase().includes(q)) score += 10;
+  }
+  if (state.loc){
+    const city = resolveCity(state.loc);
+    if (city) score -= miles(CITIES[city], CITIES[job.city]) * 0.3;
+  }
+  return score;
+}
+
+/* ---------- rendering ---------- */
+function posted(d){ return d <= 1 ? "Posted today" : `Posted ${d} days ago`; }
+function money(n){ return "$" + n.toFixed(2); }
+function pillName(spec){ const s = SPECIALTIES.find(x => x.name === spec); return (s && s.pill) || spec; }
+
+function card(j){
+  const e = EMPLOYERS[j.emp];
+  return `
+  <article class="card">
+    <img src="${e.logo}" alt="${esc(e.name)} logo" loading="lazy">
+    <div>
+      <h3>${esc(j.title)}</h3>
+      <p class="where">${esc(e.name)} - ${esc(j.city)}, CA</p>
+    </div>
+    <div class="pills">
+      ${j.daysAgo <= 1 ? '<span class="pill new">New</span>' : ""}
+      <span class="pill">${j.type}</span>
+      <span class="pill">${esc(pillName(j.specialty))}</span>
+    </div>
+    <div class="side">
+      <div><p class="pay">${money(j.min)} - ${money(j.max)} / hour</p><p class="posted">${posted(j.daysAgo)}</p></div>
+      <a class="view" href="#">View Job</a>
+    </div>
+  </article>`;
+}
+
+function pagerHTML(page, pages){
+  if (pages <= 1) return "";
+  const nums = [];
+  for (let p = 1; p <= pages; p++){
+    if (p === 1 || p === pages || Math.abs(p - page) <= 1) nums.push(p);
+    else if (nums[nums.length - 1] !== "…") nums.push("…");
+  }
+  return `<button class="wide" data-page="${page - 1}" ${page === 1 ? "disabled" : ""}>Previous</button>`
+    + nums.map(p => p === "…" ? `<span class="dots">.....</span>`
+        : `<button data-page="${p}" ${p === page ? 'aria-current="page"' : ""}>${p}</button>`).join("")
+    + `<button class="wide" data-page="${page + 1}" ${page === pages ? "disabled" : ""}>Next</button>`;
+}
+
+function activeTags(){
+  const tags = [];
+  if (state.emp) tags.push(["emp", "", EMPLOYERS[state.emp].name]);
+  if (state.q)   tags.push(["q", "", `“${state.q}”`]);
+  state.role.forEach(v  => tags.push(["role", v, v]));
+  state.cert.forEach(v  => tags.push(["cert", v, v === "none" ? "No certification required" : v]));
+  state.spec.forEach(v  => tags.push(["spec", v, v]));
+  state.sched.forEach(v => tags.push(["sched", v, v]));
+  if (state.pay)  tags.push(["pay", "", `$${state.pay}+/hr`]);
+  if (state.exp)  tags.push(["exp", "", state.exp === "entry" ? "Entry Level" : EXPERIENCE[state.exp]]);
+  if (state.date) tags.push(["date", "", $("f-date").selectedOptions[0].text]);
+  return tags;
+}
+
+function render(){
+  // results
+  let jobs = JOBS.filter(j => matches(j));
+  if (state.sort === "pay")    jobs.sort((a, b) => b.max - a.max || b.min - a.min);
+  else if (state.sort === "newest") jobs.sort((a, b) => a.daysAgo - b.daysAgo);
+  else jobs.sort((a, b) => relevance(b) - relevance(a));
+
+  const pages = Math.max(1, Math.ceil(jobs.length / PER_PAGE));
+  state.page = Math.min(state.page, pages);
+  const slice = jobs.slice((state.page - 1) * PER_PAGE, state.page * PER_PAGE);
+
+  $("list").innerHTML = slice.length ? slice.map(card).join("") :
+    `<div class="empty"><h3>No jobs match those filters</h3><p>Try removing a filter or widening your search area.</p><button class="btn btn-dark" type="button" onclick="clearAll()">Clear all filters</button></div>`;
+  $("pager").innerHTML = pagerHTML(state.page, pages);
+  $("count").textContent = jobs.length ? `${jobs.length} job${jobs.length === 1 ? "" : "s"} · showing ${(state.page - 1) * PER_PAGE + 1}–${(state.page - 1) * PER_PAGE + slice.length}` : "";
+
+  // title
+  const city = resolveCity(state.loc);
+  $("title").textContent = state.emp && !state.loc
+    ? `Medical Assistant jobs at ${EMPLOYERS[state.emp].name}`
+    : state.loc
+    ? `Medical Assistant jobs near ${city ? city + ", CA" : state.loc}`
+    : "Medical Assistant jobs in the Bay Area";
+
+  // active tags
+  const tags = activeTags();
+  const active = $("active");
+  active.hidden = !tags.length;
+  active.innerHTML = `<span class="active-label">Active:</span>` + tags.map(([g, v, l]) =>
+    `<span class="tag">${esc(l)}<button type="button" data-g="${g}" data-v="${esc(v)}" aria-label="Remove ${esc(l)}">×</button></span>`).join("");
+  $("filter-count").textContent = tags.length ? `(${tags.length})` : "";
+
+  // option counts (how many jobs each option would give)
+  document.querySelectorAll(".opt input[type=checkbox]").forEach(input => {
+    const g = input.dataset.group, v = input.value;
+    const n = JOBS.filter(j => matches(j, g) && (
+      g === "role" ? j.role === v :
+      g === "spec" ? j.specialty === v :
+      v === "none" ? j.certs.length === 0 : j.certs.includes(v))).length;
+    let badge = input.parentElement.querySelector(".n");
+    if (!badge){ badge = document.createElement("span"); badge.className = "n"; input.parentElement.append(badge); }
+    badge.textContent = n;
+  });
+}
+
+/* sync controls <- state (after clearing / tag removal) */
+function syncControls(){
+  document.querySelectorAll(".opt input[type=checkbox]").forEach(i => i.checked = state[i.dataset.group].has(i.value));
+  document.querySelectorAll("[data-sched]").forEach(b => b.setAttribute("aria-pressed", state.sched.has(b.dataset.sched)));
+  document.querySelectorAll("input[name=exp]").forEach(r => r.checked = r.value === state.exp);
+  $("f-pay").value = state.pay; updatePay();
+  $("f-date").value = state.date;
+  $("q").value = state.q;
+}
+function updatePay(){
+  const v = +$("f-pay").value;
+  $("pay-label").textContent = v ? `$${v} / hr and up` : "Any pay";
+  $("f-pay").style.setProperty("--p", v + "%");
+}
+function update(){ state.page = 1; render(); }
+function clearAll(){
+  Object.assign(state, { q: "", emp: "", pay: 0, exp: "", date: "" });
+  if (location.hash) history.replaceState(null, "", location.pathname);
+  ["role", "cert", "spec", "sched"].forEach(k => state[k].clear());
+  syncControls(); update();
+}
+window.clearAll = clearAll;
+
+/* ---------- events ---------- */
+$("search-form").addEventListener("submit", e => {
+  e.preventDefault();
+  state.q = $("q").value.trim(); state.loc = $("loc").value.trim(); state.dist = $("dist").value;
+  update();
+});
+$("filters").addEventListener("change", e => {
+  const t = e.target;
+  if (t.dataset.group){ t.checked ? state[t.dataset.group].add(t.value) : state[t.dataset.group].delete(t.value); update(); }
+  else if (t.name === "exp"){ state.exp = t.value; update(); }
+  else if (t.id === "f-date"){ state.date = t.value; update(); }
+  else if (t.id === "f-pay"){ state.pay = +t.value; update(); }
+});
+$("f-pay").addEventListener("input", updatePay);
+$("f-sched").addEventListener("click", e => {
+  const b = e.target.closest("[data-sched]"); if (!b) return;
+  const v = b.dataset.sched;
+  state.sched.has(v) ? state.sched.delete(v) : state.sched.add(v);
+  b.setAttribute("aria-pressed", state.sched.has(v)); update();
+});
+$("show-more").addEventListener("click", e => {
+  const more = $("f-spec-more"); more.hidden = !more.hidden;
+  e.target.textContent = more.hidden ? "+ Show more" : "– Show less";
+  e.target.setAttribute("aria-expanded", !more.hidden);
+});
+$("clear-all").addEventListener("click", clearAll);
+$("sort").addEventListener("change", e => { state.sort = e.target.value; update(); });
+$("active").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const { g, v } = b.dataset;
+  if (["role", "cert", "spec", "sched"].includes(g)) state[g].delete(v);
+  else if (g === "pay") state.pay = 0; else if (g === "q") state.q = ""; else state[g] = "";
+  if (g === "emp" && location.hash) history.replaceState(null, "", location.pathname);
+  syncControls(); update();
+});
+$("pager").addEventListener("click", e => {
+  const b = e.target.closest("button[data-page]"); if (!b || b.disabled) return;
+  state.page = +b.dataset.page; render();
+  document.querySelector(".results").scrollIntoView({ behavior: "smooth" });
+});
+
+/* deep links: jobs.html#pediatrics (specialty) or jobs.html#kaiser (employer) */
+function fromHash(){
+  const key = location.hash.slice(1);
+  if (EMPLOYERS[key]){
+    state.emp = key; syncControls(); update(); return;
+  }
+  const spec = SPECIALTIES.find(s => s.slug === key);
+  if (!spec) return;
+  state.spec.clear(); state.spec.add(spec.name);
+  if (SPECIALTIES.indexOf(spec) >= 4){ $("f-spec-more").hidden = false; $("show-more").textContent = "– Show less"; }
+  syncControls(); update();
+}
+window.addEventListener("hashchange", fromHash);
+
+updatePay();
+render();
+fromHash();
+</script>
+</body>
+</html>
