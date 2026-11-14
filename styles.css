@@ -5,6 +5,7 @@
 
 :root{
   --bg:#FAFBF5;
+  --cream: #FAFBF5;
   --navy:#213F53;
   --navy-2:#2B4F68;
   --ink:#1C2B36;
@@ -41,7 +42,7 @@ h1,.section-title{font-family:var(--heading);font-weight:400;color:var(--navy);l
 /* ---------- Buttons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:.6em 1.6em;font-size:.82rem;font-weight:500;transition:transform .15s,background .15s,box-shadow .15s,filter .15s}
 .btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(33,63,83,.18)}
-.btn-dark{background:var(--navy);color:#fff}
+.btn-dark{background:var(--navy);color: #fafbf5;}
 .btn-dark:hover{background:var(--navy-2)}
 .btn-light{background:var(--mint);color:var(--navy)}
 .btn-lime{background:var(--lime);color:var(--navy);border-radius:4px}
@@ -64,7 +65,7 @@ header{padding:40px 0 34px}
 .menu-toggle span::before{top:-7px}.menu-toggle span::after{top:7px}
 
 /* ---------- Navy search band (Find Jobs, Find Employers, Resources) ---------- */
-.band{background:var(--navy);color:#fff;padding:44px 0 50px}
+.band{background:var(--navy);color: #fafbf5;;padding:44px 0 50px}
 .band h1{color:#fff;font-size:clamp(1.6rem,2.6vw,2.1rem);margin-bottom:8px}
 .band .lead{font-size:.86rem;margin-bottom:28px;max-width:70ch}
 .band form{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
@@ -114,15 +115,15 @@ header{padding:40px 0 34px}
 
 /* ---------- Pagination ---------- */
 .pager{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:62px;font-size:.7rem}
-.pager button{min-width:32px;height:32px;padding:0 10px;border:1.5px solid var(--line);border-radius:4px;background:#fff;transition:border-color .15s}
+.pager button{min-width:32px;height:32px;padding:0 10px;border:1.5px solid var(--line);border-radius:4px;background:#FAFBF5;transition:border-color .15s}
 .pager button:hover:not(:disabled){border-color:var(--navy)}
-.pager button[aria-current]{background:var(--navy);border-color:var(--navy);color:#fff}
+.pager button[aria-current]{background:var(--navy);border-color:var(--navy);color:#fafbf5}
 .pager button:disabled{opacity:.4;cursor:default}
 .pager .wide{padding:0 22px}
 .pager .dots{letter-spacing:2px;color:#777}
 
 /* ---------- Footer ---------- */
-footer{background:var(--navy);color:#fff;padding:40px 0 30px}
+footer{background:var(--navy);color:#fafbf5;padding:40px 0 30px}
 footer .wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:40px}
 .foot-left{display:flex;flex-direction:column;align-items:center;gap:14px}
 .foot-brand{display:block;margin-top:6px}
